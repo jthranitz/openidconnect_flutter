@@ -369,6 +369,7 @@ class OpenIdConnectClient {
   Future<bool> refresh({
     bool raiseEvents = true,
   }) async {
+
     //is offline
     if ((await Connectivity().checkConnectivity())
         .contains(ConnectivityResult.none)) {
