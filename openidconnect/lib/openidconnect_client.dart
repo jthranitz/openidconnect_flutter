@@ -368,6 +368,7 @@ class OpenIdConnectClient {
 
   Future<bool> refresh({
     bool raiseEvents = true,
+    String? refreshToken,
   }) async {
 
     //is offline
@@ -408,7 +409,7 @@ class OpenIdConnectClient {
           clientId: clientId,
           clientSecret: clientSecret,
           scopes: _getScopes(scopes),
-          refreshToken: _identity!.refreshToken!,
+          refreshToken: refreshToken ?? _identity!.refreshToken!,
           configuration: configuration!,
         ),
       );
