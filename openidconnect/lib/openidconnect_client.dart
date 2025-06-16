@@ -366,7 +366,23 @@ class OpenIdConnectClient {
     return true;
   }
 
-  Future<bool> refresh({bool raiseEvents = true}) async {
+  Future<bool> refresh({
+    bool raiseEvents = true,
+  }) async {
+    //is offline
+    if ((await Connectivity().checkConnectivity())
+        .contains(ConnectivityResult.none)) {
+      if (autoRefresh) {
+        var refreshTime =
+            _identity!.expiresAt.difference(DateTime.now().toUtc());
+        refreshTime -= Duration(minutes: 1);
+
+        _autoRenewTimer = Future.delayed(refreshTime, refresh);
+      }
+
+      return false;
+    }
+
     if (!webUseRefreshTokens) {
       //Web has a special case where it will use a hidden iframe. This just returns true because the iframe does it.
       //In this case we simply load from storage because the web implementation just stores the new values in storage for us.
