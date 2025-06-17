@@ -375,8 +375,7 @@ class OpenIdConnectClient {
         .contains(ConnectivityResult.none)) {
       if (autoRefresh) {
         if (refreshToken == null) {
-          throw StateError(
-              "You must provide a refresh token when offline and autoRefresh is enabled.");
+          return false;
         }
         var refreshTime = JwtDecoder.getExpirationDate(refreshToken)
             .toUtc()
