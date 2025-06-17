@@ -370,13 +370,19 @@ class OpenIdConnectClient {
     bool raiseEvents = true,
     String? refreshToken,
   }) async {
-
     //is offline
     if ((await Connectivity().checkConnectivity())
         .contains(ConnectivityResult.none)) {
       if (autoRefresh) {
-        var refreshTime =
-            _identity!.expiresAt.difference(DateTime.now().toUtc());
+        if (refreshToken == null) {
+          throw StateError(
+              "You must provide a refresh token when offline and autoRefresh is enabled.");
+        }
+        var refreshTime = JwtDecoder.getExpirationDate(refreshToken)
+            .toUtc()
+            .difference(DateTime.now().toUtc());
+
+        //_identity!.expiresAt.difference(DateTime.now().toUtc());
         refreshTime -= Duration(minutes: 1);
 
         _autoRenewTimer = Future.delayed(refreshTime, refresh);
