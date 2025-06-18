@@ -403,10 +403,12 @@ class OpenIdConnectClient {
       _refreshing = true;
       if (_autoRenewTimer != null) _autoRenewTimer = null;
 
-      if ((this._identity == null ||
-              this._identity!.refreshToken == null ||
-              this._identity!.refreshToken!.isEmpty) &&
-          refreshToken == null) return false;
+      final isRefreshTokenFromIdentityValid = this._identity != null ||
+          this._identity!.refreshToken != null ||
+          this._identity!.refreshToken!.isNotEmpty;
+
+      if (!isRefreshTokenFromIdentityValid && refreshToken == null)
+        return false;
 
       await _verifyDiscoveryDocument();
 
@@ -415,9 +417,7 @@ class OpenIdConnectClient {
           clientId: clientId,
           clientSecret: clientSecret,
           scopes: _getScopes(scopes),
-          refreshToken: this._identity == null ||
-                  this._identity!.refreshToken == null ||
-                  this._identity!.refreshToken!.isEmpty
+          refreshToken: isRefreshTokenFromIdentityValid
               ? identity!.refreshToken!
               : refreshToken!,
           configuration: configuration!,
