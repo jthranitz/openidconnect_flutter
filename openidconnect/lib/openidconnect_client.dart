@@ -322,7 +322,7 @@ class OpenIdConnectClient {
     }
 
     clearIdentity();
-    _raiseEvent(AuthEvent(AuthEventTypes.NotLoggedIn));
+    _raiseEvent(AuthEvent(AuthEventTypes.Logout));
   }
 
   FutureOr<bool> isLoggedIn() async {
